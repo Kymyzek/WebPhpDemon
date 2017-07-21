@@ -47,15 +47,13 @@ class WebPhpDemon
         $this->demon = $this->setParam($set);
 
         chdir($this->demon['dir']);
-        if (file_exists('/dev/null')) {
-            /* Система *nix */
-            //$command = 'php -f ' . $demon['name'] . " > $nul 2>&1 & echo $!";
-            $command = 'php -f ' . $this->demon['name'] . ' > /dev/null 2>&1 &';
-            //echo $command;
-            exec($command);
-        } else {
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             /* Система Windows */
             pclose(popen('start /B cmd /C "php '. $this->demon['name'] .' >NUL 2>NUL"', 'r'));
+        } else {
+            /* Система *nix */
+            $command = 'php -f ' . $this->demon['name'] . ' > /dev/null 2>&1 &';
+            exec($command);
         }
     }
 
